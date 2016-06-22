@@ -11,12 +11,12 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\Projeto\User::class)->create([
+        factory(\Projeto\Entities\User::class)->create([
             'name'=>'Ivan Santos',
             'email'=>'ivan@santos.com',
             'password' => bcrypt(123456),
         ]);
-        factory(\Projeto\User::class,10)->create();
+        factory(\Projeto\Entities\User::class,10)->create();
 
         DB::table('oauth_clients')->insert([
             'id'=>'appid01',

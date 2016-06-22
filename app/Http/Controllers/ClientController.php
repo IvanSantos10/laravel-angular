@@ -4,7 +4,7 @@ namespace Projeto\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use Projeto\Client;
+use Projeto\Entities\Client;
 use Projeto\Http\Requests;
 
 class ClientController extends Controller
