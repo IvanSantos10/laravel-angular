@@ -19,6 +19,12 @@ class ClientController extends Controller
         return Client::create($request->all());
     }
 
+    public function update(Request $request, $id)
+    {
+        Client::whereId($id)->update($request->all());
+        return $this->show($id);
+    }
+
     public function show($id)
     {
         return Client::find($id);
@@ -26,6 +32,10 @@ class ClientController extends Controller
 
     public function destroy($id)
     {
-        Client::find($id)->delete();
+        if(Client::find($id)->delete()){
+            return 'Deletado com sucesso';
+        }
+
+        return 'Erro ao deletar';
     }
 }
