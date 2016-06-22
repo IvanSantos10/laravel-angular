@@ -6,7 +6,6 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Projeto\Repositories\ClientRepository;
 use Projeto\Entities\Client;
-use Projeto\Validators\ClientValidator;
 
 /**
  * Class ProjectRepositoryEloquent
@@ -22,17 +21,6 @@ class ClientRepositoryEloquent extends BaseRepository implements ClientRepositor
     public function model()
     {
         return Client::class;
-    }
-
-    /**
-    * Specify Validator class name
-    *
-    * @return mixed
-    */
-    public function validator()
-    {
-
-        return ClientValidator::class;
     }
 
 

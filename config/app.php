@@ -160,6 +160,7 @@ return [
         Projeto\Providers\AuthServiceProvider::class,
         Projeto\Providers\EventServiceProvider::class,
         Projeto\Providers\RouteServiceProvider::class,
+        Projeto\Providers\RepositoryServiceProvider::class
 
     ],
 
