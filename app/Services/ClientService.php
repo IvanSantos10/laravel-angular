@@ -8,8 +8,7 @@
 
 namespace Projeto\Services;
 
-
-use Illuminate\Contracts\Validation\ValidationException;
+use Prettus\Validator\Exceptions\ValidatorException;
 use Projeto\Repositories\ClientRepository;
 use Projeto\Validators\ClientValidator;
 
@@ -36,10 +35,10 @@ class ClientService
             $this->validator->with($data)->passesOrFail();
             return $this->repository->create($data);
 
-        } catch(ValidationException $e){
+        } catch(ValidatorException $e){
             return [
                 'error' => true,
-                'massage' => $e->getMessageBag()
+                'message' => $e->getMessageBag()
             ];
         }
     }
@@ -50,7 +49,7 @@ class ClientService
             $this->validator->with($data)->passesOrFail();
             return $this->repository->update($data, $id);
 
-        } catch(ValidationException $e){
+        } catch(ValidatorException $e){
             return [
                 'error' => true,
                 'massage' => $e->getMessageBag()

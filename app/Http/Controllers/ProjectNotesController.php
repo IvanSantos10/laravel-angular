@@ -39,175 +39,34 @@ class ProjectNotesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
+        return  $this->repository->findWhere(['project_id' => $id]);
+    }
 
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-        $projectNotes = $this->repository->all();
 
-        if (request()->wantsJson()) {
+    public function store(Request $request)
+    {
+        return $this->service->create($request->all());
+    }
 
-            return response()->json([
-                'data' => $projectNotes,
-            ]);
+    public function update(Request $request, $id, $nodeId)
+    {
+        $this->repository->update($request->all(), $nodeId);
+        return $this->show($id);
+    }
+
+    public function show($id, $nodeId)
+    {
+        return $this->repository->findWhere(['project_id' => $id, 'id' => $nodeId]);
+    }
+
+    public function destroy($id, $nodeId)
+    {
+        if($this->repository->delete($nodeId)){
+            return 'Deletado com sucesso';
         }
 
-        return view('projectNotes.index', compact('projectNotes'));
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
-        return view('projectNotes.create');
-    }
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  ProjectNoteCreateRequest $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(ProjectNoteCreateRequest $request)
-    {
-
-        try {
-
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-
-            $projectNote = $this->repository->create($request->all());
-
-            $response = [
-                'message' => 'ProjectNote created.',
-                'data'    => $projectNote->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        }
-    }
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $projectNote = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $projectNote,
-            ]);
-        }
-
-        return view('projectNotes.show', compact('projectNote'));
-    }
-
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-
-        $projectNote = $this->repository->find($id);
-
-        return view('projectNotes.edit', compact('projectNote'));
-    }
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  ProjectNoteUpdateRequest $request
-     * @param  string            $id
-     *
-     * @return Response
-     */
-    public function update(ProjectNoteUpdateRequest $request, $id)
-    {
-
-        try {
-
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
-            $projectNote = $this->repository->update($request->all(), $id);
-
-            $response = [
-                'message' => 'ProjectNote updated.',
-                'data'    => $projectNote->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-
-            if ($request->wantsJson()) {
-
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        }
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'message' => 'ProjectNote deleted.',
-                'deleted' => $deleted,
-            ]);
-        }
-
-        return redirect()->back()->with('message', 'ProjectNote deleted.');
+        return 'Erro ao deletar';
     }
 }

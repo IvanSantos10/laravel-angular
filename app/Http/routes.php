@@ -19,14 +19,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('client', 'ClientController@index');
-Route::post('client', 'ClientController@store');
-Route::get('client/{id}', 'ClientController@show');
-Route::put('client/{id}', 'ClientController@update');
-Route::delete('client/{id}', 'ClientController@destroy');
+Route::group(['middleware' => 'oauth'], function(){
+    Route::resource('client', 'ClientController', ['except' => ['create', 'edit']]);
+
+    Route::resource('project', 'ProjectsController', ['except' => ['create', 'edit']]);
+
+    Route::group(['prefix' => 'project'], function(){
+
+        Route::get('{id}/note', 'ProjectNotesController@index');
+        Route::post('{id}/note', 'ProjectNotesController@store');
+        Route::get('{id}/note/{noteId}', 'ProjectNotesController@show');
+        //Route::put('{id}/note/{noteId}', 'ProjectNotesController@update');
+        Route::delete('note/{id}', 'ProjectNotesController@destroy');
+    });
+});
 
 
-Route::auth();
-
-Route::get('/home', 'HomeController@index');
 
