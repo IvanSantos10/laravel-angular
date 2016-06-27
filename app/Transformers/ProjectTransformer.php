@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Transformers;
+namespace Projeto\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Entities\Project;
+use Projeto\Entities\Project;
 
 /**
  * Class ProjectTransformer
@@ -12,7 +12,9 @@ use App\Entities\Project;
 class ProjectTransformer extends TransformerAbstract
 {
 
+    protected $defaultIncludes = ['members'];
     /**
+     *
      * Transform the \Project entity
      * @param \Project $model
      *
@@ -21,12 +23,25 @@ class ProjectTransformer extends TransformerAbstract
     public function transform(Project $model)
     {
         return [
-            'id'         => (int) $model->id,
+            'project_id'         => (int) $model->id,
+            'client_id'         => (int) $model->client_id,
+            'owner_id'         => (int) $model->owner_id,
+            'name'     =>$model->name,
+            'description' =>$model->description,
+            'progress'    =>$model->progress,
+            'status'    =>$model->status,
+            'due_date'    =>$model->due_date,
 
             /* place your other model properties here */
-
+            /*
             'created_at' => $model->created_at,
             'updated_at' => $model->updated_at
+            */
         ];
+    }
+
+    public function includeMembers(Project $project)
+    {
+        return $this->collection($project->members, new ProjectMemberTransformer());
     }
 }

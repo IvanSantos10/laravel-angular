@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Presenters;
+namespace Projeto\Presenters;
 
-use App\Transformers\ProjectTransformer;
+use Projeto\Transformers\ProjectTransformer;
 use Prettus\Repository\Presenter\FractalPresenter;
 
 /**

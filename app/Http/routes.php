@@ -15,10 +15,6 @@ Route::post('oauth/access_token', function() {
     return Response::json(Authorizer::issueAccessToken());
 });
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::group(['middleware' => 'oauth'], function(){
     Route::resource('client', 'ClientController', ['except' => ['create', 'edit']]);
 
@@ -31,6 +27,8 @@ Route::group(['middleware' => 'oauth'], function(){
         Route::get('{id}/note/{noteId}', 'ProjectNotesController@show');
         //Route::put('{id}/note/{noteId}', 'ProjectNotesController@update');
         Route::delete('note/{id}', 'ProjectNotesController@destroy');
+
+        Route::post('{id}/file', 'ProjectsFileController@store');
     });
 });
 

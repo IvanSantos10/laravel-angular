@@ -4,6 +4,7 @@ namespace Projeto\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
+use Projeto\Presenters\ProjectPresenter;
 use Projeto\Repositories\ProjectRepository;
 use Projeto\Entities\Project;
 use Projeto\Validators\ProjectValidator;
@@ -51,5 +52,25 @@ class ProjectRepositoryEloquent extends BaseRepository implements ProjectReposit
         }
 
         return false;
+    }
+
+    public function hasMember($projectId, $memberId)
+    {
+        $project = $this->find($projectId);
+
+        foreach($project->members as $member){
+            if($member->id == $memberId){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function presenter()
+    {
+        return ProjectPresenter::class;
     }
 }
