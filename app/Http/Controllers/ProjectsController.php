@@ -48,7 +48,8 @@ class ProjectsController extends Controller
      */
     public function index()
     {
-        return $this->repository->findWhere(['owner_id' => \Authorizer::getResourceOwnerId()]);
+        //return $this->repository->findWhere(['owner_id' => \Authorizer::getResourceOwnerId()]);
+        return $this->repository->all();
     }
 
     /**
@@ -79,10 +80,11 @@ class ProjectsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
+    { /*
         if ($this->chekProjectPermissions($id) == false) {
             return ['error' => 'Access Forbidden'];
         }
+        */
         return $this->repository->find($id);
     }
 
@@ -105,11 +107,11 @@ class ProjectsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {  /*
         if ($this->chekProjectPermissions($id) == false) {
             return ['error' => 'Access Forbidden'];
         }
-
+        */
         return $this->service->update($request->all(), $id);
     }
 
@@ -121,6 +123,26 @@ class ProjectsController extends Controller
      */
     public function destroy($id)
     {
+        try
+        {
+            $this->repository->skipPresenter()->find($id)->delete();
+            return $this->erroMsgm('Projeto deletado com sucesso!');
+        }
+        catch(QueryException $e){
+            return $this->erroMsgm('Projeto não pode ser apagado pois existe um ou mais clientes vinculados a ele.');
+        }
+        catch(\NotFoundHttpException $e){
+            return $this->erroMsgm('Projeto não encontrado.');
+        }
+        catch(NoActiveAccessTokenException $e){
+            return $this->erroMsgm('Usuário não está logado.');
+        }
+        catch(\Exception $e){
+            return $this->erroMsgm('Ocorreu um erro ao excluir o projeto.');
+        }
+
+        /*
+
         if ($this->checkProjectOwner($id) == false) {
             return ['error' => 'Access Forbidden'];
         }
@@ -130,6 +152,8 @@ class ProjectsController extends Controller
         }
 
         return 'Erro ao deletar';
+
+        */
     }
 
     /**
@@ -163,6 +187,14 @@ class ProjectsController extends Controller
         }
 
         return false;
+    }
+
+    private function erroMsgm($mensagem)
+    {
+        return [
+            'error' => true,
+            'message' => $mensagem,
+        ];
     }
 
 }

@@ -101,10 +101,27 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        if($this->repository->delete($id)){
-            return 'Deletado com sucesso';
-        }
+        try{
+            $this->repository->skipPresenter()->find($id)->delete();
+            return $this->erroMsgm('Cliente deletado com sucesso!');
 
-        return 'Erro ao deletar';
+        }
+        catch(QueryException $e){
+            return $this->erroMsgm('Cliente não pode ser apagado pois existe um ou mais projetos vinculados a ele.');
+        }
+        catch(ModelNotFoundException $e){
+            return $this->erroMsgm('Cliente não encontrado.');
+        }
+        catch(\Exception $e){
+            return $this->erroMsgm('Ocorreu um erro ao excluir o cliente.');
+        }
+    }
+
+    private function erroMsgm($mensagem)
+    {
+        return [
+            'error' => true,
+            'message' => $mensagem,
+        ];
     }
 }
