@@ -2,6 +2,8 @@
 
 namespace Projeto\Http\Controllers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Projeto\Repositories\ClientRepository;
 use Projeto\Services\ClientService;
@@ -66,7 +68,13 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->find($id);
+        try {
+            return $this->repository->find($id);
+
+        }
+        catch(ModelNotFoundException $e){
+            return $this->erroMsgm('Cliente não encontrado.');
+        }
     }
 
     /**

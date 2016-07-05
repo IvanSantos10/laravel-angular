@@ -2,13 +2,15 @@
 
 namespace Projeto\Http\Controllers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
+use LucaDegasperi\OAuth2Server\Exceptions\NoActiveAccessTokenException;
 use Projeto\Http\Requests;
 use Projeto\Repositories\ProjectRepository;
 use Projeto\Services\ProjectService;
 use Projeto\Validators\ProjectValidator;
-
 
 class ProjectsController extends Controller
 {
@@ -85,7 +87,13 @@ class ProjectsController extends Controller
             return ['error' => 'Access Forbidden'];
         }
         */
-        return $this->repository->find($id);
+        try {
+            return $this->repository->find($id);
+
+        }
+        catch(ModelNotFoundException $e){
+            return $this->erroMsgm('Projeto não encontrado.');
+        }
     }
 
     /**
@@ -98,7 +106,6 @@ class ProjectsController extends Controller
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -131,7 +138,7 @@ class ProjectsController extends Controller
         catch(QueryException $e){
             return $this->erroMsgm('Projeto não pode ser apagado pois existe um ou mais clientes vinculados a ele.');
         }
-        catch(\NotFoundHttpException $e){
+        catch(ModelNotFoundException $e){
             return $this->erroMsgm('Projeto não encontrado.');
         }
         catch(NoActiveAccessTokenException $e){
@@ -141,19 +148,6 @@ class ProjectsController extends Controller
             return $this->erroMsgm('Ocorreu um erro ao excluir o projeto.');
         }
 
-        /*
-
-        if ($this->checkProjectOwner($id) == false) {
-            return ['error' => 'Access Forbidden'];
-        }
-
-        if ($this->repository->delete($id)) {
-            return 'Deletado com sucesso';
-        }
-
-        return 'Erro ao deletar';
-
-        */
     }
 
     /**
